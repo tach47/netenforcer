@@ -1,0 +1,13 @@
+---
+mappings_url: http://webserver1:8000/ne/hw_sw_mappings.yaml
+config_url: http://webserver1:8000/ne/config.yaml
+firmware_url: http://webserver1:8000/ne/firmware/
+auto_update_config: True
+script_checksum: 
+
+debug: False
+daily_check_time: 12:00:00 +0000 
+
+installer:
+  validate: False
+  temp_dir: /var/tmp

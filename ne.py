@@ -75,6 +75,10 @@ def upgrade_device(device_map):
                 elif ":" in reboot_time:
                     print("%s: Installation staged, rebooting at %s UTC" % (hostname, reboot_time))
                     print(sw.reboot(at='%s' % reboot_time))
+                elif "+" in reboot_time:
+                    reboot_time = reboot_time[1:]
+                    print("%s: Installation staged, rebooting in %s minutes" % (hostname, reboot_time))
+                    print(sw.reboot(in_min='%s' % reboot_time))
             else:
                 print("%s: Installation not ok, see logs." % hostname)
     except ConnectError as err:
@@ -119,12 +123,11 @@ def main():
                         continue
                     else:
                         print("When would you like the device to reboot in the next 24 hours?")
-                        hour = utils.question_answer("Hour (24 hour clock, UTC):")
-                        minute = utils.question_answer("Minute:")
+                        time  = utils.question_answer("HH:MM (24 hour clock, UTC) or +x (minutes)")
                         upgrades_queued.append({
                             'hostname': hostname,
                             'sw': model_map['software']['%s' % model_map['expected_sw']],
-                            'reboot_time': '%s:%s' % (hour, minute)
+                            'reboot_time': '%s' % (time)
                         })
         else:
             print("%s: Version matches expectation\n" % hostname)
