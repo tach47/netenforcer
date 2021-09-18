@@ -1,0 +1,8 @@
+---
+hardware:
+    EX2300-C-12T:
+        platform: arm 
+        version: 21.2R1-S1
+software:
+    arm:
+        21.2R1-S1: junos-arm-32-21.2R1-S1.3.tgz
