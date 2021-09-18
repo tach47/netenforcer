@@ -1,6 +1,6 @@
 ---
 devices:
-  dev1:
+  dev1.example.org:
     hostname: dev1.example.org
     ip_address: 10.0.0.254
     1password_title: dev1 
