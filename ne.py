@@ -127,7 +127,7 @@ def main():
                             'reboot_time': '%s:%s' % (hour, minute)
                         })
         else:
-            print("%s: Version matches expectation\n")
+            print("%s: Version matches expectation\n" % hostname)
     for device in upgrades_queued:
         upgrade_device(device)
 
