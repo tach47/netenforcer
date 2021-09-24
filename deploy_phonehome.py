@@ -39,8 +39,8 @@ def enable_scripts(dev):
     with Config(dev, mode="private") as ch:
         ch.load('set system scripts language python3', format='set')
         ch.load('set system scripts op file phonehome.py', format='set')
-        ch.load('set snmp file check_upgrade_log.py oid %s' % CONFIGS['log_check_oid'], format='set')
-        ch.load('set snmp file check_upgrade_log.py python-script-user %s' % PYTHON_USER, format='set')
+        ch.load('set system scripts snmp file check_upgrade_log.py oid %s' % CONFIGS['log_check_oid'], format='set')
+        ch.load('set system scripts snmp file check_upgrade_log.py python-script-user %s' % PYTHON_USER, format='set')
         ch.pdiff()
         ch.commit(comment="Enabling python3 and adding 'phonehome.py' op and 'check_upgrade_log.py' snmp scripts")
 
