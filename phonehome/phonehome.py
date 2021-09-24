@@ -14,6 +14,8 @@ JUNOS_VERSIONS = {}
 def _Debug(msg):
     if CONFIGS['debug'] == True:
         print(msg)
+    with open('/var/log/upgrade_log', 'a') as f:
+        f.write(msg)
 
 
 def check_free(min_free, dir):
@@ -24,7 +26,7 @@ def check_free(min_free, dir):
         return (False, available_space)
 
 
-def fetch_and_install(url):
+def fetch_and_install(url, current_version, target_version):
     try:
         min_free = requests.get(url, stream=True).headers['Content-Length']
     except KeyError:
@@ -42,11 +44,11 @@ def fetch_and_install(url):
                 progress=progress_out
             )
             if ok:
-                _Debug("Install completed, pending reboot. %s" % msg)
+                _Debug("%s\n[SUCCESS] - %s - Install completed, pending reboot." % (msg, target_version))
             else:
-                _Debug("Install NOT successful. %s" % msg)
+                _Debug("%s\n[FAIL] - %s - Install NOT successful, remaining on %s" % (msg, target_version, current_version))
     else:
-        _Debug("Insufficient disk space: %s required, %s available" % (min_free, available_space))
+        _Debug("[FAIL] - %s - Insufficient disk space, remaining on %s: %s required, %s available" % (target_version, current_version, min_free, available_space))
 
 
 def get_version_and_model():
@@ -95,7 +97,7 @@ def main():
         _Debug(" Expected: %s" % model_map['expected_sw'])
         _Debug(" Installer: firmware/%s\n" % model_map['software']['%s' % model_map['expected_sw']])
         firmware_url = "%s/%s" % (CONFIGS['firmware_url'], model_map['software']['%s' % model_map['expected_sw']])
-        fetch_and_install(firmware_url)
+        fetch_and_install(firmware_url, version, model_map['expected_sw'])
 
 
 if __name__ == "__main__":

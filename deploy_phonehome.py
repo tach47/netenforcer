@@ -13,6 +13,7 @@ import py_onepassword.op as op
 
 CONFIGS = {}
 DEVICE_LIST = {}
+PYTHON_USER = ''
 
 
 def generate_device_list():
@@ -33,13 +34,15 @@ def set_timer(dev):
         ch.commit(comment="Applying event timer configs for phonehome.py")
 
 
-def enable_script(dev):
+def enable_scripts(dev):
     print("%s: Adding python script configs" % dev.hostname)
     with Config(dev, mode="private") as ch:
         ch.load('set system scripts language python3', format='set')
         ch.load('set system scripts op file phonehome.py', format='set')
+        ch.load('set snmp file check_upgrade_log.py oid %s' % CONFIGS['log_check_oid'], format='set')
+        ch.load('set snmp file check_upgrade_log.py python-script-user %s' % PYTHON_USER, format='set')
         ch.pdiff()
-        ch.commit(comment="Enabling python3 and adding 'phonehome.py' op script")
+        ch.commit(comment="Enabling python3 and adding 'phonehome.py' op and 'check_upgrade_log.py' snmp scripts")
 
 
 def scp_scripts(dev):
@@ -47,6 +50,7 @@ def scp_scripts(dev):
     with SCP(dev, progress=True) as scp:
         scp.put("phonehome/phonehome_config.yaml", remote_path="/var/db/scripts/op/")
         scp.put("phonehome/phonehome.py", remote_path="/var/db/scripts/op/")
+        scp.put("phonehome/check_upgrade_log.py", remote_path="/var/db/scripts/snmp/")
 
 
 def bootstrap():
@@ -56,15 +60,17 @@ def bootstrap():
 
 
 def main():
+    global PYTHON_USER
     bootstrap()
     devices = generate_device_list()
     for device in devices:
-        device_info = DEVICE_LIST['%s' % hostname]
+        device_info = DEVICE_LIST['%s' % device]
+        PYTHON_USER = op.get_username(device_info['1password_title'])
         with Device(host=device_info['hostname'],
                     user=op.get_username(device_info['1password_title']),
                     passwd=op.get_password(device_info['1password_title'])) as dev:
             scp_scripts(dev)
-            enable_script(dev)
+            enable_scripts(dev)
             set_timer(dev)
 
 
