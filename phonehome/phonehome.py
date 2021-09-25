@@ -98,7 +98,8 @@ def main():
         _Debug(" Installer: firmware/%s\n" % model_map['software']['%s' % model_map['expected_sw']])
         firmware_url = "%s/%s" % (CONFIGS['firmware_url'], model_map['software']['%s' % model_map['expected_sw']])
         fetch_and_install(firmware_url, version, model_map['expected_sw'])
-
+    else:
+        _Debug("[INFO] - %s - Running expected version" % version)
 
 if __name__ == "__main__":
     main()

@@ -19,7 +19,7 @@ PYTHON_USER = ''
 def generate_device_list():
     global DEVICE_LIST
     with open('devices.yaml', 'r') as f:
-        devices = yaml.safe_load(f.read())['devices']
+        devices = yaml.safe_load(f.read())
     DEVICE_LIST = devices
     return devices
 
