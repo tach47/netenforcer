@@ -19,7 +19,6 @@ var (
 )
 
 type netCfg struct {
-	deviceList    string
 	snmpCommunity string
 	snmpOID       string
 }
@@ -58,7 +57,6 @@ func readHttpConfig() *httpCfg {
 	hc.addr = viper.GetString("http.address")
 	NetworkCfg.snmpCommunity = viper.GetString("snmp.snmpCommunity")
 	NetworkCfg.snmpOID = viper.GetString("snmp.snmpOID")
-	NetworkCfg.deviceList = viper.GetString("snmp.devicelist")
 	return &hc
 }
 
