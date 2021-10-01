@@ -1,0 +1,18 @@
+<!-- This is (hopefully) temporary -->
+<html>
+<link rel="stylesheet" href="/dist/table.css">
+<div name="devices" align="center">
+<h1>{{ .hostname }}</h1><hr/>
+<br/>Uptime:
+{{ .uptime }}<br/><br/>
+<table width="90%" border="1">
+<tr><td>Model</td><td>{{ .hardware }}</td></tr>
+<tr><td>Version</td><td>{{ .version }}</td></tr>
+<tr><td>Upgrade Logs</td><td>{{ range .upgradeLog }}
+{{ . }}<br/> 
+{{ end }}</td></tr>
+<tr><td>Errors</td><td>{{ .errorLog }}</td></tr>
+<tr><td>Actions</td><td><button name="rebootnow">Queue Reboot</button><button name="refresh">Refresh info</button></td></tr>
+</table>
+</div>
+</html>

@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+    </head>
+    <body>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script language="javascript">
+$(document).ready(function() {
+    $('#example').DataTable( {
+        "ajax": "/collectLogs",
+        "columns": [
+            { "data": "Hostname" },
+            { "data": "Hardware" },
+            { "data": "Version" },
+            { "data": "UpgradeLog" },
+            { "data": "Error" }
+        ]
+    } );
+} );
+</script>
+
+<table id="example" class="display" style="width:100%">
+    <thead>
+        <tr>
+            <th>Hostname</th>
+            <th>Hardware</th>
+            <th>Version</th>
+            <th>Upgrade Log</th>
+            <th>Error</th>
+        </tr>
+    </thead>
+    <tfoot>
+        <tr>
+            <th>Hostname</th>
+            <th>Hardware</th>
+            <th>Version</th>
+            <th>Upgrade Log</th>
+            <th>Error</th>
+        </tr>
+    </tfoot>
+</table>
+</body>
+</html>

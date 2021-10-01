@@ -1,0 +1,19 @@
+
+body {
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.85em;
+}
+table {
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.85em;
+}
+
+th{
+    background: rgb(216, 253, 174)
+}
+tr:first-child {
+    background: #FFF
+}
+tr:nth-child(2n+3) {
+    background: #EEE
+}
