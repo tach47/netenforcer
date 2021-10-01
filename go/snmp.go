@@ -35,15 +35,22 @@ func walkSNMP(device string, oid string) ([]string, error) {
 
 	for _, variable := range result.Variables {
 		var returnvalue []string
-		returnvalue = append(returnvalue, string(variable.Value.([]byte)))
+		switch variable.Type {
+		case g.OctetString:
+			output := variable.Value.([]byte)
+			returnvalue = append(returnvalue, string(output))
+		default:
+			output := g.ToBigInt(variable.Value)
+			returnvalue = append(returnvalue, output.String())
+		}
 		return returnvalue, nil
 	}
 	return nil, nil
 }
 
-func pollSNMP(wg *sync.WaitGroup, device Device, devInfo *[]DeviceLogs) {
+func pollSNMP(wg *sync.WaitGroup, device Device, devInfo *[]DeviceLog) {
 	defer wg.Done()
-	var deviceOutput DeviceLogs
+	var deviceOutput DeviceLog
 	deviceOutput.Hostname = device.Hostname
 	reply, err := walkSNMP(device.IPAddress, NetworkCfg.snmpOID)
 	if err != nil {
@@ -59,8 +66,29 @@ func pollSNMP(wg *sync.WaitGroup, device Device, devInfo *[]DeviceLogs) {
 	}
 }
 
-func pollJunipers(DeviceList []Device) []DeviceLogs {
-	var devices []DeviceLogs
+func collectExtendedLogs(device Device, deviceLog *[]DeviceExtendedLog) {
+	var deviceOutput DeviceExtendedLog
+	deviceOutput.Hostname = device.Hostname
+	deviceOutput.IPAddress = device.IPAddress
+	reply, err := walkSNMP(device.IPAddress, NetworkCfg.snmpLogsOID)
+	if err != nil {
+		deviceOutput.ErrorLog[0] = "[ERROR] - SNMP Timeout"
+		*deviceLog = append(*deviceLog, deviceOutput)
+	} else {
+		deviceOutput.UpgradeLog = reply
+		reply, _ = walkSNMP(deviceOutput.IPAddress, "1.3.6.1.2.1.1.1.0")
+		s := strings.Split(reply[0], ",")
+		deviceOutput.Version = strings.Split(s[2], " ")[3]
+		deviceOutput.Hardware = strings.Split(s[1], " ")[2]
+		reply, _ = walkSNMP(deviceOutput.IPAddress, "1.3.6.1.2.1.1.3.0")
+		uptimeHR := centisecondsToString(reply[0])
+		deviceOutput.Uptime = uptimeHR + " / " + reply[0]
+		*deviceLog = append(*deviceLog, deviceOutput)
+	}
+}
+
+func pollJunipers(DeviceList []Device) []DeviceLog {
+	var devices []DeviceLog
 	wg := &sync.WaitGroup{}
 	wg.Add(len(DeviceList))
 	for _, device := range DeviceList {
@@ -68,4 +96,10 @@ func pollJunipers(DeviceList []Device) []DeviceLogs {
 	}
 	wg.Wait()
 	return devices
+}
+
+func queryDevice(QueriedDevice Device) []DeviceExtendedLog {
+	var deviceLog []DeviceExtendedLog
+	collectExtendedLogs(QueriedDevice, &deviceLog)
+	return deviceLog
 }

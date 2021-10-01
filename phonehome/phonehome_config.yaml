@@ -1,7 +1,7 @@
 ---
-mappings_url: http://webserver1:8000/ne/hw_sw_mappings.yaml
-config_url: http://webserver1:8000/ne/config.yaml
-firmware_url: http://webserver1:8000/ne/firmware/
+mappings_url: http://webserver1:3000/ne/hw_sw_mappings.yaml
+config_url: http://webserver1:3000/ne/phonehome/phonehome_config.yaml
+firmware_url: http://webserver1:3000/ne/firmware/
 auto_update_config: True
 script_checksum: 
 

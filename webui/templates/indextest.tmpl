@@ -1,0 +1,28 @@
+<!-- This is (hopefully) temporary -->
+<html>
+<link rel="stylesheet" href="/dist/table.css">
+<div name="devices" align="center">
+<table width="90%" border="1">
+<tr>
+<th>Device</th>
+<th width="100">Model</th>
+<th width="100">Version</th>
+<th>Log Message</th>
+<th width="180">Actions</th>
+</tr>
+{{ range $logs := .logs }}
+<tr>
+<td><a href="/displayDeviceLogs?device={{ .Hostname }}">{{ .Hostname }}</a></td>
+<td>{{ .Hardware }}</td>
+<td>{{ .Version }}</td>
+<td>{{ .UpgradeLog }}{{ .Error }}</td>
+<td name="actions" align="right">
+<button border="1" name="reboot">Queue Reboot</button>
+&nbsp;
+<button border="1" name="{{.Hostname}}-refresh" align="right">Refresh</button>
+</td>
+</tr>
+{{end}}
+</table>
+</div>
+</html>

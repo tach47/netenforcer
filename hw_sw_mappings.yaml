@@ -2,7 +2,8 @@
 hardware:
     EX2300-C-12T:
         platform: arm 
-        version: 21.2R1-S1.3  # This should match the version listed in the junos package filename
+        version: 21.3R1.9  # This should match the version listed in the junos package filename
 software:
     arm:
         21.2R1-S1: junos-arm-32-21.2R1-S1.3.tgz
+        21.3R1.9: junos-arm-32-21.3R1.9.tgz

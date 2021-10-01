@@ -19,8 +19,10 @@ var (
 )
 
 type netCfg struct {
-	snmpCommunity string
-	snmpOID       string
+	snmpCommunity   string
+	snmpOID         string
+	snmpLogsOID     string
+	snmpWalkableOID string
 }
 
 type httpCfg struct {
@@ -57,6 +59,8 @@ func readHttpConfig() *httpCfg {
 	hc.addr = viper.GetString("http.address")
 	NetworkCfg.snmpCommunity = viper.GetString("snmp.snmpCommunity")
 	NetworkCfg.snmpOID = viper.GetString("snmp.snmpOID")
+	NetworkCfg.snmpLogsOID = viper.GetString("snmp.snmpLogsOID")
+	NetworkCfg.snmpWalkableOID = viper.GetString("snmp.snmpWalkableOID")
 	return &hc
 }
 
@@ -89,7 +93,13 @@ func main() {
 		configRuntime()
 		gin.SetMode(gin.ReleaseMode)
 		router := gin.Default()
+		router.LoadHTMLGlob("../webui/templates/*")
+		router.Static("/dist", hc.uiPath)
+		router.Static("/ne/", "..")
 		router.GET("/collectLogs", collectLogs)
+		router.GET("/displayLogs", displayLogs)
+		router.GET("/displayDeviceLogs", displayDeviceLogs)
+		router.GET("/logDetails", collectDevice)
 
 		err := router.Run(hc.addr + ":" + hc.port)
 		if err != nil {
